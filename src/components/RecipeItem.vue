@@ -45,7 +45,3 @@ props: ['recipe']
 }
 
 </script>
-
-<style>
-
-</style>
