@@ -1,27 +1,29 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "./views/Home.vue";
+import addRecipe from "./view/addRecipe.vue";
+import searchList from "./view/searchList.vue";
+import loginPage from "./view/loginPage.vue";
 
 Vue.use(Router);
 
 export default new Router({
   mode: "history",
-  base: process.env.BASE_URL,
   routes: [
     {
-      path: "/",
-      name: "home",
-      component: Home
+      path: "/addrec",
+      name: "addList",
+      component: addRecipe
     },
     {
-      path: "/about",
-      name: "about",
-      component: () => import("./views/About.vue")
+      path: "/login",
+      name: "loginPage",
+      component: loginPage
     },
     {
-      path: "/list",
-      name: "list",
-      component: () => import("./views/RecipeList.vue")
+      path: "/:mode?/:keyword?/:page?",
+      name: "searchList",
+      component: searchList,
+      props: true
     }
   ]
 });
