@@ -47,7 +47,9 @@
               class="btn btn-outline-secondary"
               @click="setCatData(catKeyword)"
               type="button"
-            >{{ labelCat }}</button>
+            >
+              {{ labelCat }}
+            </button>
           </div>
           <div>
             <button
@@ -56,18 +58,29 @@
               @click="setCatData(cat.name)"
               type="button"
               class="btn btn-outline-secondary ml-1"
-            >{{ cat.name }}</button>
+            >
+              {{ cat.name }}
+            </button>
             <!--Cat live search results-->
           </div>
         </div>
 
         <div class="input-group mx-1">
-          <div class="mx-1" v-for="(cat, index) in catSelected" v-bind:key="cat.id">
+          <div
+            class="mx-1"
+            v-for="(cat, index) in catSelected"
+            v-bind:key="cat.id"
+          >
             <button class="border-0" @click="setCatEdit(index)">
               <strong>{{ cat.name }}</strong>
             </button>
             <!--cat list-->
-            <button type="button" @click="delCat(index)" class="close" aria-label="Close">
+            <button
+              type="button"
+              @click="delCat(index)"
+              class="close"
+              aria-label="Close"
+            >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -101,7 +114,9 @@
             class="btn btn-outline-secondary"
             @click="setIngData(ingKeyword, ingCount)"
             type="button"
-          >{{ labelIng }}</button>
+          >
+            {{ labelIng }}
+          </button>
 
           <!--Ing live search-->
           <div>
@@ -111,18 +126,29 @@
               v-bind:key="ing.id"
               type="button"
               class="btn btn-outline-secondary ml-1"
-            >{{ ing.name }}</button>
+            >
+              {{ ing.name }}
+            </button>
             <!--Ing live search results-->
           </div>
         </div>
         <div class="input-group mx-1">
-          <div class="mx-1" v-for="(ingredient, index) in ingSelected" v-bind:key="ingredient.id">
+          <div
+            class="mx-1"
+            v-for="(ingredient, index) in ingSelected"
+            v-bind:key="ingredient.id"
+          >
             <button class="border-0" @click="setIngEdit(index)">
               <strong>{{ ingredient.ingredient.name }} :</strong>
               {{ ingredient.count }}
             </button>
             <!--ingredient list-->
-            <button type="button" @click="delIng(index)" class="close" aria-label="Close">
+            <button
+              type="button"
+              @click="delIng(index)"
+              class="close"
+              aria-label="Close"
+            >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -147,17 +173,23 @@
       <div class="row border mt-2">
         <div>
           <div class="input-group mx-1 my-1">
-            <button
-              class="btn btn-outline-secondary"
-              type="button"
-              @click="saveRecipe"
-            >Добавить рецепт</button>
+            <button class="btn btn-secondary" type="button" @click="saveRecipe">
+              Добавить рецепт
+            </button>
             <button
               class="btn btn-outline-secondary ml-1"
               type="button"
               @click="cleanForm"
-            >Очистить форму</button>
-            <button class="btn btn-outline-secondary ml-1" type="button" @click="cleanForm">Отменить</button>
+            >
+              Очистить форму
+            </button>
+            <button
+              class="btn btn-outline-secondary ml-1"
+              type="button"
+              @click="cleanForm"
+            >
+              Отменить
+            </button>
           </div>
         </div>
         <div class="col">
@@ -326,5 +358,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

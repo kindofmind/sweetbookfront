@@ -2,11 +2,11 @@
   <div class="px-2 py-1">
     <div class="row">
       <div class="col-md-auto">
-        <h2 class="h2">{{ recipe.name}}</h2>
+        <h2 class="h2">{{ recipe.name }}</h2>
       </div>
       <div class="col order-last text-right">
         <img src="/ava/dv.jpg" width="35" height="35" class="rounded-circle" />
-        Dart V.
+        Name
       </div>
     </div>
 
@@ -17,12 +17,12 @@
         <h1 class="h4">Категории</h1>
         <p>
           <router-link
-            :to="'/catsrch/'+category.name"
+            :to="'/catsrch/' + category.name"
             v-for="category in recipe.categories"
             :key="category.id"
-            class="badge badge-secondary mr-1">
-            {{
-            category.name }}
+            class="badge badge-secondary mr-1"
+          >
+            {{ category.name }}
           </router-link>
         </p>
       </div>
@@ -30,11 +30,11 @@
         <h1 class="h4">Ингредиенты</h1>
         <p>
           <router-link
-            :to="'/ingsrch/'+composition.ingredient.name"
+            :to="'/ingsrch/' + composition.ingredient.name"
             v-for="composition in recipe.compositions"
             :key="composition.id"
             class="badge badge-dark mr-1"
-          >{{ composition.ingredient.name }}
+            >{{ composition.ingredient.name }}
           </router-link>
         </p>
       </div>
@@ -42,7 +42,9 @@
     <hr class="mt-n2" />
     <div class="row">
       <div class="col-md-auto">
-        <a class="btn btn-secondary mr-1" href="#" role="button">Читать рецепт</a>
+        <a class="btn btn-secondary mr-1" href="#" role="button"
+          >Читать рецепт</a
+        >
 
         <button type="button" class="btn btn-dark">
           Рейтинг

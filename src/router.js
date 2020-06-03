@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import addRecipe from "./view/addRecipe.vue";
-import searchList from "./view/searchList.vue";
+import recipeList from "./view/recipeList.vue";
 import loginPage from "./view/loginPage.vue";
 
 Vue.use(Router);
@@ -15,14 +15,14 @@ export default new Router({
       component: addRecipe
     },
     {
-      path: "/login",
+      path: "/signup",
       name: "loginPage",
       component: loginPage
     },
     {
       path: "/:mode?/:keyword?/:page?",
       name: "searchList",
-      component: searchList,
+      component: recipeList,
       props: true
     }
   ]
