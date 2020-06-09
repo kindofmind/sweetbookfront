@@ -17,6 +17,8 @@
               class="form-control my-1"
               placeholder="Логин"
               @keyup.enter="focuspass"
+              minlength="4"
+              maxlength="8"
             />
             <input
               v-model="password"
@@ -26,9 +28,12 @@
               class="form-control my-1"
               placeholder="Пароль"
               @keyup.enter="signin"
+              minlength="8"
+              maxlength="12"
             />
             <button
               @click="signin"
+              :disabled="disablelogin"
               name="submit"
               value="submit"
               type="submit"
@@ -50,10 +55,19 @@
             cancel-variant="outline-secondary"
             ok-variant="secondary"
             ok-title="Зарегистрироваться"
+            :ok-disabled="disableregister"
             @ok="registerUser"
             title="Регистрация"
           >
-            <b-alert show variant="dark">{{ regerrorslist }}</b-alert>
+            <b-alert
+              variant="dark"
+              show
+              dismissible
+              v-for="error in regerrorslist"
+              :key="error.id"
+              v-if="regerror"
+              >{{ error }}</b-alert
+            >
 
             <form>
               <b-form-input
@@ -148,11 +162,27 @@ export default {
     reglastname: "",
     regmoodmsg: "",
     userdatacorrect: false,
+    regerror: false,
     regerrorslist: []
   }),
+
+  computed: {
+    disablelogin: function() {
+      return this.username.length < 4 || this.password.length < 8;
+    },
+
+    disableregister: function() {
+      return (
+        this.regusername.length < 4 ||
+        this.regpassword.length < 8 ||
+        this.regfirstname.length < 3
+      );
+    }
+  },
+
   methods: {
     // LOGIN METHODS SECTION
-        focuspass() {
+    focuspass() {
       this.$refs.password.focus();
     },
 
@@ -160,13 +190,18 @@ export default {
       this.$refs.user.focus();
     },
 
-    showalert(msg) {
+    showloginalert(msg) {
       this.loginalertmessage = msg;
       this.loginalertcaused = true;
     },
 
-    async signin() {
+    hideloginalert() {
+      this.loginalertmessage = "";
       this.loginalertcaused = false;
+    },
+
+    async signin() {
+      this.hideloginalert;
       if (this.username == "" || this.password == "") {
         this.showalert("Заполните все поля");
         this.focususer();
@@ -174,11 +209,9 @@ export default {
         this.result = await api_Friend.signIn(this.username, this.password);
         if (this.result) {
           this.setUserInfo();
-          this.loginalertmessage = "";
-          this.loginalertcaused = "";
           this.$router.push({ path: "/" });
         } else {
-          this.showalert("Неверные данные");
+          this.showloginalert("Неверные данные");
           this.focususer();
         }
       }
@@ -207,9 +240,13 @@ export default {
     },
 
     // REGISTER METHODS SECTION
-    async registerUser() {
+    async registerUser(bvModalEvt) {
+      this.hideregerror();
+      bvModalEvt.preventDefault();
       await this.checkUserData();
-      if (this.userdatacorrect) {
+      if (!this.userdatacorrect) {
+        this.showregerror();
+      } else {
         let userData = {
           username: this.regusername,
           password: this.regpassword,
@@ -228,7 +265,7 @@ export default {
       let passwordPattern = new RegExp(
         "^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,12}$"
       );
-      this.regerrorslist = [];
+      this.hideregerror();
       let isUsernameFree = await api_Friend.checkUserNameFree(this.regusername);
       let isPasswordCorrect = passwordPattern.test(this.regpassword);
       let isUsernameCorrect = usernamePattern.test(this.regusername);
@@ -246,6 +283,15 @@ export default {
         isPasswordCorrect &&
         isUsernameCorrect &&
         isFirstNameExists;
+    },
+
+    showregerror() {
+      this.regerror = true;
+    },
+
+    hideregerror() {
+      this.regerrorslist = [];
+      this.regerror = false;
     }
   },
 
