@@ -192,21 +192,13 @@
             </button>
           </div>
         </div>
-        <div class="col">
-          <span>
-            <strong>{{ userFn }}</strong>
-            {{ userLn }}
-          </span>
-        </div>
+        <div class="col"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { apiFriend } from "../apihelpers/apiFriend.js";
-var api_Friend = new apiFriend("http://localhost:8070");
-
 export default {
   data: () => ({
     catKeyword: "",
@@ -225,9 +217,6 @@ export default {
     labelCat: "Добавить",
     labelIng: "Добавить",
 
-    userFn: "Alexander",
-    userLn: "Petrov",
-
     recipeName: "",
     description: "",
     algorithm: "",
@@ -235,10 +224,10 @@ export default {
     ingSelected: []
   }),
   watch: {
-    catKeyword: function(after, before) {
+    catKeyword: function() {
       this.getCatCreatedData();
     },
-    ingKeyword: function(after, before) {
+    ingKeyword: function() {
       this.getIngCreatedData();
     }
   },
@@ -254,7 +243,7 @@ export default {
     getCatData: function() {
       this.catFound = [];
       if (!this.editCat && this.catKeyword.length >= 3)
-        this.catFound = api_Friend.getCategory(this.catKeyword);
+        this.catFound = this.$getCategory(this.catKeyword);
     },
 
     setCatData: function(catItemName) {
@@ -291,7 +280,7 @@ export default {
     getIngData: function() {
       this.ingFound = [];
       if (this.ingKeyword.length >= 3)
-        this.ingFound = api_Friend.getIngredient(this.ingKeyword);
+        this.ingFound = this.$getIngredient(this.ingKeyword);
     },
 
     useIngData: function(ingItemName) {
@@ -352,7 +341,7 @@ export default {
         categories: this.catSelected,
         compositions: this.ingSelected
       };
-      api_Friend.saveRecipe(recipe);
+      this.$saveRecipe(recipe);
     }
   }
 };

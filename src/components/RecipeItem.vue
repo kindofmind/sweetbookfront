@@ -1,57 +1,63 @@
 <template>
-  <div class="px-2 py-1">
-    <div class="row">
-      <div class="col-md-auto">
-        <h2 class="h2">{{ recipe.name }}</h2>
-      </div>
-      <div class="col order-last text-right">
-        <img src="/ava/dv.jpg" width="35" height="35" class="rounded-circle" />
-        Name
-      </div>
-    </div>
+  <div class="px-2 py-2">
+    <b-row>
+      <b-col md="auto">
+        <h2>{{ recipe.name }}</h2>
+      </b-col>
+      <b-col order="last" class="text-right">
+        <b-badge
+          :to="'/autsrch/' + recipe.user.firstName + ' ' + recipe.user.lastName"
+          variant="dark"
+          >{{ recipe.user.firstName + " " + recipe.user.lastName }}</b-badge
+        >
+      </b-col>
+    </b-row>
 
-    <p class="h3 text-muted mr-1">{{ recipe.description }}</p>
+    <h3 class="text-muted">{{ recipe.description }}</h3>
     <hr />
-    <div class="row">
-      <div class="col-md-auto">
-        <h1 class="h4">Категории</h1>
-        <p>
-          <router-link
-            :to="'/catsrch/' + category.name"
-            v-for="category in recipe.categories"
-            :key="category.id"
-            class="badge badge-secondary mr-1"
-          >
-            {{ category.name }}
-          </router-link>
-        </p>
-      </div>
-      <div class="col-md-auto">
-        <h1 class="h4">Ингредиенты</h1>
-        <p>
-          <router-link
-            :to="'/ingsrch/' + composition.ingredient.name"
-            v-for="composition in recipe.compositions"
-            :key="composition.id"
-            class="badge badge-dark mr-1"
-            >{{ composition.ingredient.name }}
-          </router-link>
-        </p>
-      </div>
-    </div>
-    <hr class="mt-n2" />
-    <div class="row">
-      <div class="col-md-auto">
-        <a class="btn btn-secondary mr-1" href="#" role="button"
-          >Читать рецепт</a
+    <b-row>
+      <b-col md="auto">
+        <h4>Категории</h4>
+        <b-badge
+          v-for="category in recipe.categories"
+          :key="'cat' + category.id"
+          :to="'/catsrch/' + category.name"
+          variant="secondary"
+          class="mr-1"
+          >{{ category.name }}</b-badge
+        >
+      </b-col>
+      <b-col md="auto">
+        <h4>Ингредиенты</h4>
+        <b-badge
+          v-for="composition in recipe.compositions"
+          :key="'comp' + composition.id"
+          :to="'/ingsrch/' + composition.ingredient.name"
+          variant="secondary"
+          class="mr-1"
+          >{{ composition.ingredient.name }}</b-badge
+        >
+      </b-col>
+    </b-row>
+    <hr class="mt-2" />
+    <b-row>
+      <b-col md="auto">
+        <b-button
+          v-b-modal="'recipemodal' + recipe.id"
+          variant="secondary"
+          class="mr-1"
+          >Читать рецепт</b-button
         >
 
-        <button type="button" class="btn btn-dark">
-          Рейтинг
-          <span class="badge badge-light">{{ recipe.sumRating }}</span>
-        </button>
-      </div>
-    </div>
+        <b-button variant="dark"
+          >Рейтинг
+          <b-badge variant="light">{{ recipe.sumRating }}</b-badge></b-button
+        >
+      </b-col>
+    </b-row>
+    <b-modal :id="'recipemodal' + recipe.id" size="lg" :title="recipe.name"
+      >Hello Large Modal!</b-modal
+    >
   </div>
 </template>
 

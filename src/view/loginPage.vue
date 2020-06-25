@@ -57,17 +57,19 @@
             ok-title="Зарегистрироваться"
             :ok-disabled="disableregister"
             @ok="registerUser"
+            @close="resetregdata"
+            @cancel="resetregdata"
             title="Регистрация"
           >
-            <b-alert
-              variant="dark"
-              show
-              dismissible
-              v-for="error in regerrorslist"
-              :key="error.id"
-              v-if="regerror"
-              >{{ error }}</b-alert
-            >
+            <div v-if="regerror">
+              <b-alert
+                variant="dark"
+                show
+                v-for="error in regerrorslist"
+                :key="error.id"
+                >{{ error }}</b-alert
+              >
+            </div>
 
             <form>
               <b-form-input
@@ -143,9 +145,6 @@
 </template>
 
 <script>
-import { apiFriend } from "../apihelpers/apiFriend.js";
-var api_Friend = new apiFriend("http://localhost:8070");
-
 export default {
   data: () => ({
     //LOGIN SECTION
@@ -206,7 +205,7 @@ export default {
         this.showalert("Заполните все поля");
         this.focususer();
       } else {
-        this.result = await api_Friend.signIn(this.username, this.password);
+        this.result = await this.$signIn(this.username, this.password);
         if (this.result) {
           this.setUserInfo();
           this.$router.push({ path: "/" });
@@ -227,7 +226,7 @@ export default {
         moodMsg: null
       };
 
-      userdata = await api_Friend.getUserInfo();
+      userdata = await this.$getUserInfo();
       if (userdata != null) {
         loggedIn = true;
         userInfo.username = userdata.username;
@@ -254,7 +253,17 @@ export default {
           lastName: this.reglastname,
           moodMsg: this.regmoodmsg
         };
-        await api_Friend.registerUser(userData);
+        if (await this.$registerUser(userData)) {
+          this.$bvModal.hide("reg-modal");
+          this.$bvModal.msgBoxOk(`Добро пожаловать ${userData.firstName}`, {
+            okVariant: "dark",
+            okTitle: "Спасибо!",
+            headerClass: "p-2 border-bottom-0",
+            footerClass: "p-2 border-top-0",
+            centered: true
+          });
+          this.resetregdata();
+        }
       }
     },
 
@@ -266,7 +275,7 @@ export default {
         "^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,12}$"
       );
       this.hideregerror();
-      let isUsernameFree = await api_Friend.checkUserNameFree(this.regusername);
+      let isUsernameFree = await this.$checkUserNameFree(this.regusername);
       let isPasswordCorrect = passwordPattern.test(this.regpassword);
       let isUsernameCorrect = usernamePattern.test(this.regusername);
       let isFirstNameExists = this.regfirstname.length > 0;
@@ -292,6 +301,17 @@ export default {
     hideregerror() {
       this.regerrorslist = [];
       this.regerror = false;
+    },
+
+    resetregdata() {
+      this.regusername = "";
+      this.regpassword = "";
+      this.regfirstname = "";
+      this.reglastname = "";
+      this.regmoodmsg = "";
+      this.userdatacorrect = false;
+      this.regerror = false;
+      this.regerrorslist = [];
     }
   },
 

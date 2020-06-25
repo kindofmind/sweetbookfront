@@ -1,28 +1,18 @@
 <template>
   <div id="app">
     <b-navbar type="dark" variant="dark" sticky>
-      <b-navbar-nav>
-        <router-link to="/">
-          <span class="navbar-brand mb-0 h1">Sweetbook</span>
-        </router-link>
+      <b-navbar-brand to="/">Sweetbook</b-navbar-brand>
 
-        <router-link
-          v-if="this.$store.state.loggedIn"
-          class="nav-link"
-          to="/addrec"
+      <b-navbar-nav>
+        <b-nav-item v-if="this.$store.state.loggedIn" to="/addrec"
+          >Добавить рецепт</b-nav-item
         >
-          <span>Добавить рецепт</span>
-        </router-link>
       </b-navbar-nav>
 
       <b-navbar-nav class="ml-auto">
-        <router-link
-          v-if="!this.$store.state.loggedIn"
-          class="nav-link"
-          to="/signup"
+        <b-nav-item v-if="!this.$store.state.loggedIn" to="/signup"
+          >Вход</b-nav-item
         >
-          <span>Вход</span>
-        </router-link>
 
         <b-nav-item-dropdown
           v-if="this.$store.state.loggedIn"
@@ -31,14 +21,10 @@
               ' ' +
               this.$store.state.userInfo.lastName
           "
-          right
+          down
         >
-          <b-dropdown-item href="#">Лич</b-dropdown-item>
-          <b-dropdown-item href="#">Выход</b-dropdown-item>
+          <b-dropdown-item @click="logout">Выход</b-dropdown-item>
         </b-nav-item-dropdown>
-        <router-link class="nav-link" to="/signup">
-          <span>zoo</span>
-        </router-link>
       </b-navbar-nav>
     </b-navbar>
     <main class="container-fluid">
@@ -50,8 +36,6 @@
 </template>
 
 <script>
-import { apiFriend } from "./apihelpers/apiFriend.js";
-var api_Friend = new apiFriend("http://localhost:8070");
 
 export default {
   data: () => ({}),
@@ -67,7 +51,7 @@ export default {
         moodMsg: null
       };
 
-      userdata = await api_Friend.getUserInfo();
+      userdata = await this.$getUserInfo();
       if (userdata != null) {
         loggedIn = true;
         userInfo.username = userdata.username;
@@ -77,6 +61,16 @@ export default {
         this.$store.commit("updateUserInfo", userInfo);
         this.$store.commit("updateLoggedIn", loggedIn);
       }
+    },
+
+    resetuserdata() {
+      this.$store.commit("updateUserInfo", null);
+      this.$store.commit("updateLoggedIn", false);
+    },
+
+    async logout() {
+      await this.$logout();
+      this.resetuserdata();
     }
   },
 

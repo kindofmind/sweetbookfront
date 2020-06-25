@@ -1,6 +1,6 @@
 <template>
-  <div class="container-fluid mt-2">
-    <div class="container bg-transparent">
+  <b-container fluid>
+    <div class="container bg-transparent mt-2">
       <searchbar />
     </div>
     <h2 class="text-center">{{ caption }}</h2>
@@ -8,7 +8,7 @@
       <transition-group name="list">
         <recipeitem
           v-for="recipe in recipes.recipes"
-          v-bind:key="recipe.id"
+          v-bind:key="'rec' + recipe.id"
           :recipe="recipe"
           class="my-2 border rounded"
         />
@@ -16,7 +16,7 @@
 
       <div class="nav justify-content-center overflow-auto">
         <b-pagination-nav
-          type="dark"
+          v-if="showbar"
           :link-gen="linkGen"
           :number-of-pages="recipes.pageNumber"
           :value="param.page"
@@ -24,14 +24,12 @@
         ></b-pagination-nav>
       </div>
     </div>
-  </div>
+  </b-container>
 </template>
 
 <script>
 import searchbar from "./searchBar.vue";
 import recipeitem from "../components/RecipeItem.vue";
-import { apiFriend } from "../apihelpers/apiFriend.js";
-var api_Friend = new apiFriend("http://localhost:8070");
 
 export default {
   name: "searchList",
@@ -47,6 +45,10 @@ export default {
   }),
 
   computed: {
+    showbar: function() {
+      return this.recipes.pageNumber > 1;
+    },
+
     param() {
       return {
         page: this.$route.params.page || 1,
@@ -78,24 +80,41 @@ export default {
       switch (this.param.mode) {
         case "page":
           this.caption = "Все рецепты";
-          this.recipes = await api_Friend.getPage(this.param.page - 1);
+          this.recipes = await this.$getPage(this.param.page - 1);
+          break;
+
+        case "globsrch":
+          this.caption = `Глобальный поиск "${this.param.keyword}"`;
+          this.recipes = await this.$getGlobalSrchPage(
+            this.param.keyword,
+            this.param.page - 1
+          );
+          break;
+
+        case "namesrch":
+          this.caption = `Поиск по названию "${this.param.keyword}"`;
+          this.recipes = await this.$getNameSrchPage(
+            this.param.keyword,
+            this.param.page - 1
+          );
           break;
         case "catsrch":
           this.caption = `Поиск по категории "${this.param.keyword}"`;
-          this.recipes = await api_Friend.getCatSrchPage(
+          this.recipes = await this.$getCatSrchPage(
             this.param.keyword,
             this.param.page - 1
           );
           break;
         case "ingsrch":
           this.caption = `Поиск по ингредиенту "${this.param.keyword}"`;
-          this.recipes = await api_Friend.getIngSrchPage(
+          this.recipes = await this.$getIngSrchPage(
             this.param.keyword,
             this.param.page - 1
           );
           break;
-        case "globsrch":
-          this.recipes = await api_Friend.getRecSrchPage(
+        case "autsrch":
+          this.caption = `Поиск по автору "${this.param.keyword}"`;
+          this.recipes = await this.$getUsrSrchPage(
             this.param.keyword,
             this.param.page - 1
           );
