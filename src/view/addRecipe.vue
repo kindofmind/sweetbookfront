@@ -240,10 +240,10 @@ export default {
   methods: {
     /*Work with Categories*/
 
-    getCatData: function() {
+    getCatData: async function() {
       this.catFound = [];
       if (!this.editCat && this.catKeyword.length >= 3)
-        this.catFound = this.$getCategory(this.catKeyword);
+        this.catFound = await this.$getCategory(this.catKeyword);
     },
 
     setCatData: function(catItemName) {
@@ -277,10 +277,10 @@ export default {
 
     /*Work with Ingredients (Compositions)  */
 
-    getIngData: function() {
+    getIngData: async function() {
       this.ingFound = [];
       if (this.ingKeyword.length >= 3)
-        this.ingFound = this.$getIngredient(this.ingKeyword);
+        this.ingFound = await this.$getIngredient(this.ingKeyword);
     },
 
     useIngData: function(ingItemName) {
@@ -333,7 +333,7 @@ export default {
       this.ingSelected = [];
     },
 
-    saveRecipe: function() {
+    saveRecipe: async function() {
       let recipe = {
         name: this.recipeName,
         description: this.description,
@@ -341,7 +341,7 @@ export default {
         categories: this.catSelected,
         compositions: this.ingSelected
       };
-      this.$saveRecipe(recipe);
+      await this.$saveRecipe(recipe);
     }
   }
 };
