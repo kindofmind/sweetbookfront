@@ -22,6 +22,18 @@ export default {
       return data.data;
     };
 
+    Vue.prototype.$getUsersLike = async function(recipeId) {
+      let url = `${apiUrl}/recipe/getuserslike/${recipeId}`;
+      let data = await axios.get(url, { withCredentials: true });
+      return data.data;
+    };
+
+    Vue.prototype.$setUsersLike = async function(recipeId, likeValue) {
+      let url = `${apiUrl}/recipe/like/${recipeId}/${likeValue}`;
+      let data = await axios.get(url, { withCredentials: true });
+      return data.data;
+    };
+
     Vue.prototype.$saveRecipe = async function(recipe) {
       let url = `${apiUrl}/recipe`;
       let result = false;
