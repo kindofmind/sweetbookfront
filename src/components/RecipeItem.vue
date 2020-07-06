@@ -135,7 +135,7 @@
           <b-row align-v="center">
             <b-col>
               <h5>Рейтинг</h5>
-              <b-form inline>
+              <b-form inline @change="setUsersLike">
                 <b-form-checkbox
                   v-model="userslike"
                   :disabled="!this.$store.state.loggedIn"
@@ -144,7 +144,6 @@
                   button-variant="outline-dark"
                   unchecked-value="0"
                   size="sm"
-                  @input="setUsersLike"
                 >
                   <b-icon icon="emoji-frown" font-scale="2"></b-icon>
                 </b-form-checkbox>
@@ -161,7 +160,6 @@
                   value="1"
                   unchecked-value="0"
                   size="sm"
-                  @input="setUsersLike"
                 >
                   <b-icon icon="emoji-laughing" font-scale="2"></b-icon>
                 </b-form-checkbox>
@@ -177,17 +175,6 @@
               </h4>
             </b-col>
           </b-row>
-
-          <!-- <b-row>
-            <b-col class="text-right">
-              <b-button
-                variant="secondary"
-                @click="$bvModal.hide('recipemodal' + recipe.id)"
-                class="mr-1"
-                >Закрыть</b-button
-              >
-            </b-col>
-          </b-row> -->
         </div>
       </template>
     </b-modal>
@@ -219,11 +206,14 @@ export default {
   methods: {
     async getUsersLike() {
       if (this.$store.state.loggedIn)
-        this.userlikesit = await this.$getUsersLike(this.recipe.id);
+        this.userslike = await this.$getUsersLike(this.recipe.id);
     },
     async setUsersLike() {
-      if (this.$store.state.loggedIn)
+      if (this.$store.state.loggedIn) {
         await this.$setUsersLike(this.recipe.id, this.userslike);
+        this.recipe.sumRating = await this.$getRecipeRating(this.recipe.id);
+      }
+
     }
   }
 };
