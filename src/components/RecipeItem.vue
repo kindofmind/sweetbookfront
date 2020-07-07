@@ -213,7 +213,6 @@ export default {
         await this.$setUsersLike(this.recipe.id, this.userslike);
         this.recipe.sumRating = await this.$getRecipeRating(this.recipe.id);
       }
-
     }
   }
 };

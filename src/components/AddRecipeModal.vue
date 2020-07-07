@@ -1,205 +1,185 @@
 <template>
-  <div id="addrecipe" class="container-fluid mt-2">
-    <h2 class="text-center">Добавить рецепт</h2>
-    <div class="container bg-transparent">
-      <!--Name and description row-->
-      <div class="row border">
-        <div class="input-group mx-1 my-1">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Название</span>
-          </div>
-          <input
+  <b-modal
+    id="addrecipe-modal"
+    centered
+    size="lg"
+    footer-bg-variant="light"
+    header-bg-variant="light"
+    @show="cleanForm()"
+  >
+    <template slot="modal-header">
+      <div class="w-100">
+        <b-button-close @click="closeModal()"></b-button-close>
+        <h2 class="text-center">Добавить рецепт</h2>
+      </div>
+    </template>
+    <!--Name and description row-->
+    <b-row>
+      <b-col>
+        <b-input-group prepend="Название">
+          <b-input
             v-model="recipeName"
             type="text"
-            class="form-control"
             placeholder="Например: 'Торт Красный бархат'"
           />
-        </div>
-
-        <div class="input-group mx-1 my-1">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Описание</span>
-          </div>
-          <input
+        </b-input-group>
+        <b-input-group class="mt-1" prepend="Описание">
+          <b-input
             v-model="description"
             type="text"
             class="form-control"
             placeholder="Например: 'Бисквитный торт с крем-чиз и ягодной начинкой'"
           />
-        </div>
-      </div>
-      <!--End of Name and description row-->
+        </b-input-group>
+      </b-col>
+    </b-row>
+    <!--End of Name and description row-->
 
-      <!--Category row-->
-      <div class="row border mt-2">
-        <div class="input-group mx-1 my-1">
-          <span class="input-group-text">Категории</span>
-          <input
+    <!--Category row-->
+    <b-row>
+      <b-col class="mt-1">
+        <b-input-group prepend="Категории">
+          <b-input
             v-model="catKeyword"
             @keyup.enter="setCatData(catKeyword)"
             type="text"
             maxlength="30"
-            class="form-control"
             placeholder="Например: 'Десерты'"
           />
-          <div class="input-group-append">
-            <button
-              class="btn btn-outline-secondary"
-              @click="setCatData(catKeyword)"
-              type="button"
-            >
-              {{ labelCat }}
-            </button>
-          </div>
-          <div>
-            <button
+          <b-button
+            variant="secondary"
+            @click="setCatData(catKeyword)"
+            class="ml-1"
+          >
+            {{ labelCat }}
+          </b-button>
+          <b-input-group-append>
+            <b-button
               v-for="cat in catFound"
               v-bind:key="cat.id"
               @click="setCatData(cat.name)"
-              type="button"
-              class="btn btn-outline-secondary ml-1"
+              variant="outline-secondary"
             >
               {{ cat.name }}
-            </button>
+            </b-button>
             <!--Cat live search results-->
-          </div>
-        </div>
-
-        <div class="input-group mx-1">
+          </b-input-group-append>
+        </b-input-group>
+        <b-input-group>
           <div
-            class="mx-1"
+            class="mt-1 mr-1"
             v-for="(cat, index) in catSelected"
             v-bind:key="cat.id"
           >
-            <button class="border-0" @click="setCatEdit(index)">
+            <b-button size="sm" variant="secondary" @click="setCatEdit(index)">
               <strong>{{ cat.name }}</strong>
-            </button>
+            </b-button>
             <!--cat list-->
-            <button
-              type="button"
-              @click="delCat(index)"
-              class="close"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <b-button-close @click="delCat(index)" />
           </div>
-        </div>
-      </div>
-      <!-- end of category row-->
+        </b-input-group>
+      </b-col>
+    </b-row>
+    <!-- end of category row-->
 
-      <!--Ingredient row-->
-      <div class="row border mt-2">
-        <div class="input-group mx-1 my-1">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Ингредиенты</span>
-          </div>
-          <input
+    <!--Ingredient row-->
+    <b-row>
+      <b-col class="mt-1">
+        <b-input-group prepend="Ингредиенты">
+          <b-input
             v-model="ingKeyword"
             type="text"
             placeholder="Например: 'Мука'"
-            class="form-control"
           />
-          <div class="input-group-prepend">
-            <span class="input-group-text">Количество</span>
-          </div>
-          <input
-            v-model="ingCount"
-            @keyup.enter="setIngData(ingKeyword, ingCount)"
-            type="text"
-            placeholder="Например: '350 грамм'"
-            class="form-control"
-          />
-          <button
-            class="btn btn-outline-secondary"
-            @click="setIngData(ingKeyword, ingCount)"
-            type="button"
-          >
-            {{ labelIng }}
-          </button>
-
+          <b-input-group-append>
+            <b-input-group prepend="Количество">
+              <b-input
+                v-model="ingCount"
+                @keyup.enter="setIngData(ingKeyword, ingCount)"
+                type="text"
+                placeholder="Например: '350 грамм'"
+              />
+              <b-button
+                variant="secondary"
+                @click="setIngData(ingKeyword, ingCount)"
+                class="ml-1"
+              >
+                {{ labelIng }}
+              </b-button>
+            </b-input-group>
+          </b-input-group-append>
           <!--Ing live search-->
-          <div>
-            <button
+          <b-input-group-append>
+            <b-button
               v-for="ing in ingFound"
               @click="useIngData(ing.name)"
               v-bind:key="ing.id"
-              type="button"
-              class="btn btn-outline-secondary ml-1"
+              variant="outline-secondary"
             >
               {{ ing.name }}
-            </button>
+            </b-button>
             <!--Ing live search results-->
-          </div>
-        </div>
-        <div class="input-group mx-1">
+          </b-input-group-append>
+        </b-input-group>
+        <b-input-group>
           <div
-            class="mx-1"
+            class="mt-1 mr-1"
             v-for="(ingredient, index) in ingSelected"
             v-bind:key="ingredient.id"
           >
-            <button class="border-0" @click="setIngEdit(index)">
+            <b-button size="sm" variant="secondary" @click="setIngEdit(index)">
               <strong>{{ ingredient.ingredient.name }} :</strong>
               {{ ingredient.count }}
-            </button>
+            </b-button>
             <!--ingredient list-->
-            <button
-              type="button"
-              @click="delIng(index)"
-              class="close"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <b-button-close @click="delIng(index)" />
           </div>
-        </div>
-      </div>
-      <!-- end of Ingredient row-->
+        </b-input-group>
+      </b-col>
+    </b-row>
+    <!-- end of Ingredient row-->
 
-      <!--Recipe row-->
-      <div class="row border mt-2">
-        <div class="input-group mx-1 my-1">
-          <textarea
+    <!--Recipe row-->
+    <b-row>
+      <b-col class="mt-1">
+        <b-input-group>
+          <b-form-textarea
             v-model="algorithm"
-            class="form-control"
             rows="7"
             placeholder="Подробно опишите алгоритм приготовления..."
-          ></textarea>
-        </div>
-      </div>
-      <!-- end of Recipe row-->
+          />
+        </b-input-group>
+      </b-col>
+    </b-row>
+    <!-- end of Recipe row-->
 
-      <!--Buttons row-->
-      <div class="row border mt-2">
-        <div>
-          <div class="input-group mx-1 my-1">
-            <button class="btn btn-secondary" type="button" @click="saveRecipe">
-              Добавить рецепт
-            </button>
-            <button
-              class="btn btn-outline-secondary ml-1"
-              type="button"
-              @click="cleanForm"
-            >
-              Очистить форму
-            </button>
-            <button
-              class="btn btn-outline-secondary ml-1"
-              type="button"
-              @click="cleanForm"
-            >
-              Отменить
-            </button>
-          </div>
-        </div>
-        <div class="col"></div>
+    <template slot="modal-footer">
+      <div class="w-100">
+        <!--Buttons row-->
+        <b-row>
+          <b-col>
+            <b-input-group>
+              <b-button variant="secondary" @click="saveRecipe()">
+                Добавить рецепт
+              </b-button>
+              <b-button variant="outline-secondary" @click="cleanForm()">
+                Очистить форму
+              </b-button>
+              <b-button variant="outline-secondary" @click="closeModal()">
+                Закрыть
+              </b-button>
+            </b-input-group>
+          </b-col>
+        </b-row>
       </div>
-    </div>
-  </div>
+    </template>
+  </b-modal>
 </template>
 
 <script>
 export default {
+  name: "addRecipeModal",
+
   data: () => ({
     catKeyword: "",
     ingKeyword: "",
@@ -238,6 +218,11 @@ export default {
   },
 
   methods: {
+    closeModal: function() {
+      this.cleanForm();
+      this.$bvModal.hide("addrecipe-modal");
+    },
+
     /*Work with Categories*/
 
     getCatData: async function() {

@@ -4,7 +4,7 @@
       <b-navbar-brand to="/">Sweetbook</b-navbar-brand>
 
       <b-navbar-nav>
-        <b-nav-item v-if="this.$store.state.loggedIn" to="/addrec"
+        <b-nav-item v-if="this.$store.state.loggedIn" v-b-modal.addrecipe-modal
           >Добавить рецепт</b-nav-item
         >
       </b-navbar-nav>
@@ -21,13 +21,13 @@
               ' ' +
               this.$store.state.userInfo.lastName
           "
-          down
         >
           <b-dropdown-item @click="logout">Выход</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
     <main class="container-fluid">
+      <addrecipemodal />
       <transition name="list">
         <router-view />
       </transition>
@@ -36,9 +36,14 @@
 </template>
 
 <script>
+import addrecipemodal from "./components/AddRecipeModal.vue";
 
 export default {
   data: () => ({}),
+
+  components: {
+    addrecipemodal
+  },
 
   methods: {
     async setUserInfo() {
