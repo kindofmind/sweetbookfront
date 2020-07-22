@@ -7,7 +7,7 @@ import store from "./store";
 import apihelper from "./plugins/apihelper.js";
 
 Vue.config.productionTip = false;
-Vue.use(apihelper, "http://localhost:8070");
+Vue.use(apihelper, "http://5.187.5.96:8070");
 
 new Vue({
   router,
